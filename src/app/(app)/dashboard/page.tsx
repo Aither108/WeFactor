@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Card,
   CardContent,
@@ -84,8 +86,8 @@ export default function DashboardPage() {
         </CardHeader>
         <CardContent className="flex flex-col items-center justify-center text-center gap-4">
           <div className="relative">
-            <Award className="h-24 w-24 text-yellow-500" />
-            <Badge className="absolute top-16 left-1/2 -translate-x-1/2 bg-yellow-600 text-white">
+            <Award className="h-24 w-24 text-primary" />
+            <Badge className="absolute top-16 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground">
               Gold
             </Badge>
           </div>
