@@ -8,33 +8,10 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { surveysData } from "@/lib/surveys";
 
-const surveys = [
-  {
-    title: "Q2 Team Engagement Survey",
-    dueDate: "June 30, 2024",
-    status: "Open",
-    isAnonymous: true,
-  },
-  {
-    title: "Product Feedback - New Feature",
-    dueDate: "June 25, 2024",
-    status: "Open",
-    isAnonymous: false,
-  },
-  {
-    title: "Q1 Wellness Check-in",
-    dueDate: "March 31, 2024",
-    status: "Closed",
-    isAnonymous: true,
-  },
-  {
-    title: "Communication Effectiveness Poll",
-    dueDate: "May 15, 2024",
-    status: "Closed",
-    isAnonymous: true,
-  },
-];
+const surveys = surveysData;
 
 export default function SurveysPage() {
   return (
@@ -54,15 +31,19 @@ export default function SurveysPage() {
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-2">
-                <Badge variant={survey.status === 'Open' ? 'default' : 'secondary'}>
+                {(() => { const statusVariant: 'default' | 'secondary' = survey.status === 'Open' ? 'default' : 'secondary'; return (
+                  <Badge variant={statusVariant}>
                   {survey.status}
-                </Badge>
+                  </Badge>
+                ); })()}
                 {survey.isAnonymous && <Badge variant="outline">Anonymous</Badge>}
               </div>
             </CardContent>
             <CardFooter>
-              <Button className="w-full" disabled={survey.status === 'Closed'}>
-                {survey.status === 'Open' ? 'Start Survey' : 'View Results'}
+              <Button asChild className="w-full" disabled={survey.status === 'Closed'}>
+                <Link href={`/surveys/${survey.slug}`}>
+                  {survey.status === 'Open' ? 'Start Survey' : 'View Results'}
+                </Link>
               </Button>
             </CardFooter>
           </Card>

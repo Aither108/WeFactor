@@ -9,6 +9,9 @@ import { MainNav, BottomNav } from "@/components/main-nav";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Progress } from "./ui/progress";
+import { Button } from "./ui/button";
+import Link from "next/link";
+import { Pencil } from "lucide-react";
 
 export function AppSidebar() {
   return (
@@ -31,6 +34,11 @@ export function AppSidebar() {
                 <CardTitle className="text-base">Alex Turner</CardTitle>
                 <CardDescription>Gold Tier</CardDescription>
               </div>
+              <Button asChild variant="ghost" size="icon" className="ml-auto">
+                <Link href="/settings">
+                  <Pencil className="h-4 w-4" />
+                </Link>
+              </Button>
             </div>
           </CardHeader>
           <CardContent className="p-4 pt-0">

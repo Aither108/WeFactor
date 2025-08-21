@@ -1,6 +1,7 @@
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import {
   Card,
   CardContent,
@@ -15,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { generateSummary } from "./actions";
 import { Loader2, Wand2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useState } from 'react';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -37,10 +39,38 @@ function SubmitButton() {
 
 export function CoachingForm() {
   const initialState = { summary: "", error: "", errors: {} };
-  const [state, dispatch] = useFormState(generateSummary, initialState);
+  const [state, dispatch] = useActionState(generateSummary, initialState);
+  const [wins, setWins] = useState("");
+  const [blockers, setBlockers] = useState("");
+  const [actionItems, setActionItems] = useState("");
+
+  function saveDraft() {
+    const storageKey = 'wefactor-coaching-drafts';
+    try {
+      const existing = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      existing.unshift({ wins, blockers, actionItems, date: new Date().toISOString() });
+      localStorage.setItem(storageKey, JSON.stringify(existing));
+    } catch {}
+  }
+
+  function sendToActionPlan() {
+    const boardKey = 'wefactor-board';
+    try {
+      const board = JSON.parse(localStorage.getItem(boardKey) || '{"todo":[],"doing":[],"done":[]}');
+      const items = actionItems.split(/\n|;|\,/).map(s=>s.trim()).filter(Boolean);
+      const mapped = items.map((t: string) => ({ id: `ai${Date.now()}-${Math.random().toString(36).slice(2,6)}`, title: t, points: 10 }));
+      board.todo = [...mapped, ...board.todo];
+      localStorage.setItem(boardKey, JSON.stringify(board));
+    } catch {}
+  }
 
   return (
-    <form action={dispatch}>
+    <form action={async (formData) => {
+      setWins((formData.get('wins') as string) ?? '');
+      setBlockers((formData.get('blockers') as string) ?? '');
+      setActionItems((formData.get('actionItems') as string) ?? '');
+      await dispatch(formData);
+    }}>
       <Card>
         <CardHeader>
           <CardTitle>New 1-on-1 Session</CardTitle>
@@ -51,17 +81,17 @@ export function CoachingForm() {
         <CardContent className="space-y-6">
           <div className="grid w-full gap-1.5">
             <Label htmlFor="wins">Wins & Accomplishments</Label>
-            <Textarea placeholder="What went well since our last session?" id="wins" name="wins" rows={4} />
+            <Textarea value={wins} onChange={(e)=>setWins(e.target.value)} placeholder="What went well since our last session?" id="wins" name="wins" rows={4} />
             {state.errors?.wins && <p className="text-sm font-medium text-destructive">{state.errors.wins[0]}</p>}
           </div>
           <div className="grid w-full gap-1.5">
             <Label htmlFor="blockers">Growth & Blockers</Label>
-            <Textarea placeholder="Any challenges or areas for growth?" id="blockers" name="blockers" rows={4} />
+            <Textarea value={blockers} onChange={(e)=>setBlockers(e.target.value)} placeholder="Any challenges or areas for growth?" id="blockers" name="blockers" rows={4} />
             {state.errors?.blockers && <p className="text-sm font-medium text-destructive">{state.errors.blockers[0]}</p>}
           </div>
           <div className="grid w-full gap-1.5">
             <Label htmlFor="actionItems">Action Items</Label>
-            <Textarea placeholder="What are the next steps for you and your manager?" id="actionItems" name="actionItems" rows={4} />
+            <Textarea value={actionItems} onChange={(e)=>setActionItems(e.target.value)} placeholder="What are the next steps for you and your manager?" id="actionItems" name="actionItems" rows={4} />
             {state.errors?.actionItems && <p className="text-sm font-medium text-destructive">{state.errors.actionItems[0]}</p>}
           </div>
           {state.summary && (
@@ -82,9 +112,12 @@ export function CoachingForm() {
             </Alert>
           )}
         </CardContent>
-        <CardFooter className="flex justify-between">
+        <CardFooter className="flex justify-between gap-3">
           <SubmitButton />
-          <Button variant="outline">Save as Draft</Button>
+          <div className="flex gap-2">
+            <Button type="button" variant="outline" onClick={saveDraft}>Save as Draft</Button>
+            <Button type="button" variant="secondary" onClick={sendToActionPlan}>Add Action Items to Action Plan</Button>
+          </div>
         </CardFooter>
       </Card>
     </form>

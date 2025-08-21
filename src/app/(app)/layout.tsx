@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
 
 export default function AppLayout({
   children,
@@ -23,6 +24,7 @@ export default function AppLayout({
         <main className="flex-1 p-4 md:p-6 lg:p-8 bg-background">
           {children}
         </main>
+        <Footer />
       </SidebarInset>
     </SidebarProvider>
   );

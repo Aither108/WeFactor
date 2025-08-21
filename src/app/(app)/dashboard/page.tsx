@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import Link from 'next/link';
 import { Progress } from "@/components/ui/progress";
 import {
   BarChart,
@@ -48,32 +49,32 @@ export default function DashboardPage() {
         </CardHeader>
         <CardContent>
           <ul className="space-y-3">
-            <li className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50">
-              <div>
-                <p className="font-medium">Finalize Q3 OKRs</p>
-                <p className="text-sm text-muted-foreground">Due: 3 days</p>
-              </div>
-              <Button variant="ghost" size="icon">
+            <li>
+              <Link href="/goals" className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50">
+                <div>
+                  <p className="font-medium">Finalize Q3 OKRs</p>
+                  <p className="text-sm text-muted-foreground">Due: 3 days</p>
+                </div>
                 <ArrowRight className="h-4 w-4" />
-              </Button>
+              </Link>
             </li>
-            <li className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50">
-              <div>
-                <p className="font-medium">Complete engagement survey</p>
-                <p className="text-sm text-muted-foreground">Due: 1 week</p>
-              </div>
-              <Button variant="ghost" size="icon">
+            <li>
+              <Link href="/surveys" className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50">
+                <div>
+                  <p className="font-medium">Complete engagement survey</p>
+                  <p className="text-sm text-muted-foreground">Due: 1 week</p>
+                </div>
                 <ArrowRight className="h-4 w-4" />
-              </Button>
+              </Link>
             </li>
-            <li className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50">
-              <div>
-                <p className="font-medium">Prepare for 1-on-1 with Sarah</p>
-                <p className="text-sm text-muted-foreground">Due: Tomorrow</p>
-              </div>
-              <Button variant="ghost" size="icon">
+            <li>
+              <Link href="/coaching" className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50">
+                <div>
+                  <p className="font-medium">Prepare for 1-on-1 with Sarah</p>
+                  <p className="text-sm text-muted-foreground">Due: Tomorrow</p>
+                </div>
                 <ArrowRight className="h-4 w-4" />
-              </Button>
+              </Link>
             </li>
           </ul>
         </CardContent>
@@ -94,7 +95,7 @@ export default function DashboardPage() {
           <p className="text-2xl font-bold">1,250 PTS</p>
         </CardContent>
         <CardFooter>
-          <Button className="w-full">View Action Plan</Button>
+          <Button asChild className="w-full"><Link href="/action-plan">View Action Plan</Link></Button>
         </CardFooter>
       </Card>
 
@@ -133,7 +134,7 @@ export default function DashboardPage() {
           </div>
         </CardContent>
         <CardFooter>
-          <Button variant="outline" className="w-full">View Agenda</Button>
+          <Button asChild variant="outline" className="w-full"><Link href="/coaching">View Agenda</Link></Button>
         </CardFooter>
       </Card>
 
@@ -165,10 +166,7 @@ export default function DashboardPage() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Shout-outs</CardTitle>
-          <Button size="sm">
-            <PlusCircle className="h-4 w-4 mr-2" />
-            New
-          </Button>
+          <Button asChild size="sm"><Link href="/shout-outs"><PlusCircle className="h-4 w-4 mr-2" />New</Link></Button>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-start gap-3">

@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Card,
   CardContent,
@@ -8,8 +10,16 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Textarea } from "@/components/ui/textarea";
 import { PlusCircle } from "lucide-react";
+import { useEffect, useState } from "react";
 
-const shoutOuts = [
+type Shout = {
+  author: { name: string; avatar: string };
+  recipient: string;
+  message: string;
+  timestamp: string;
+};
+
+const seed: Shout[] = [
   {
     author: { name: "Jane Doe", avatar: "https://placehold.co/100x100.png?text=JD" },
     recipient: "Michael Scott",
@@ -31,6 +41,31 @@ const shoutOuts = [
 ];
 
 export default function ShoutOutsPage() {
+  const storageKey = 'wefactor-shouts';
+  const [shoutOuts, setShoutOuts] = useState<Shout[]>(seed);
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    try { const s = localStorage.getItem(storageKey); if (s) setShoutOuts(JSON.parse(s)); } catch {}
+  }, []);
+  useEffect(() => {
+    try { localStorage.setItem(storageKey, JSON.stringify(shoutOuts)); } catch {}
+  }, [shoutOuts]);
+
+  function post() {
+    if (!message.trim()) return;
+    const now = new Date();
+    setShoutOuts(prev => [
+      {
+        author: { name: "Alex Turner", avatar: "https://placehold.co/100x100.png?text=AT" },
+        recipient: "Team",
+        message: message.trim(),
+        timestamp: now.toLocaleString(),
+      },
+      ...prev,
+    ]);
+    setMessage("");
+  }
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
       <div>
@@ -45,8 +80,8 @@ export default function ShoutOutsPage() {
           <CardTitle>New Shout-out</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Textarea placeholder="Share your appreciation... @mention a teammate or team." rows={3} />
-          <Button>
+          <Textarea value={message} onChange={e=>setMessage(e.target.value)} placeholder="Share your appreciation... @mention a teammate or team." rows={3} />
+          <Button onClick={post}>
             <PlusCircle className="mr-2 h-4 w-4" />
             Post Shout-out
           </Button>
